@@ -1,0 +1,43 @@
+create_barplot <- function(data, x, y, fill = NULL, orientation = c("vertical", "horizontal"), x_lab = NULL, y_lab = NULL, title = NULL) {
+  orientation <- match.arg(orientation)
+  
+  colors <- unlist(my_company_colors()) # unlist to convert from list to vector
+  
+  # Base plot construction
+  p <- ggplot(data, aes_string(x = x, y = y)) +
+    geom_bar(stat = "identity", fill = colors["primary"]) +
+    theme_my_company()
+  
+  # Modify scales and aesthetics based on the orientation
+  if (orientation == "vertical") {
+    p <- p + theme(axis.line.x = element_line(color = "black", size = 0.1))
+    if(is.numeric(data[[y]])) {
+      p <- p + scale_y_continuous(expand = expansion(mult = c(0, 0.05))) # for numerical data
+    } else {
+      p <- p + scale_y_discrete(expand = expansion(mult = c(0, 0.05))) # for categorical data
+    }
+  } else if (orientation == "horizontal") {
+    p <- p + coord_flip() + theme(axis.line.y = element_line(color = "black", size = 0.1))
+    if(is.numeric(data[[x]])) {
+      p <- p + scale_y_continuous(expand = expansion(mult = c(0, 0))) # Adjusting expansion here for numerical data
+    } else {
+      p <- p + scale_y_discrete(expand = expansion(mult = c(0, 0))) # Adjusting expansion here for categorical data
+    }
+  }
+  
+  # Optional manual axis labels
+  if (!is.null(x_lab)) {
+    p <- p + labs(x = x_lab)
+  }
+  
+  if (!is.null(y_lab)) {
+    p <- p + labs(y = y_lab)
+  }
+  
+  # Optional plot title
+  if (!is.null(title)) {
+    p <- p + labs(title = title)
+  }
+  
+  return(p)
+}

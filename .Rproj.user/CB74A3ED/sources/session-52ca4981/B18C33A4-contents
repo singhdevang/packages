@@ -1,0 +1,15 @@
+install.packages("devtools")
+library(devtools)
+devtools::build()
+devtools::install()
+library(icpackage)
+
+countries <- data.frame(Country = c("India", "Pakistan", "Malaysia", "Europe"),GDP = c(10, 20, 30, 40))
+#Ensure your data frame and variables match these example names
+test_plot <- create_barplot(data = countries, x = "Country",
+                            y = "GDP", 
+                            fill = "Country", 
+                            orientation = "vertical",
+                            title = "Country with GDP")
+print(test_plot)
+
